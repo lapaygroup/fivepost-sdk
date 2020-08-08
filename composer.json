@@ -1,0 +1,28 @@
+{
+  "name": "lapaygroup/fivepost-sdk",
+  "description": "SDK для работы с API транспортной компании 5post (https://fivepost.ru)",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "support": {
+    "issues": "https://github.com/lapaygroup/fivepost-sdk/issues",
+    "source": "https://github.com/lapaygroup/fivepost-sdk"
+  },
+  "authors": [
+    {
+      "name": "Nikolay Lapay",
+      "email": "nl@wildtuna.pro"
+    }
+  ],
+  "require": {
+    "php": ">=5.5",
+    "guzzlehttp/guzzle": "~6.3",
+    "psr/log": "^1.0",
+    "ext-json": "*",
+    "monolog/monolog": "^2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "LapayGroup\\FivePostSdk\\\\": "src/"
+    }
+  }
+}

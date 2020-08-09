@@ -17,8 +17,7 @@
     "php": ">=5.5",
     "guzzlehttp/guzzle": "~6.3",
     "psr/log": "^1.0",
-    "ext-json": "*",
-    "monolog/monolog": "^2.1"
+    "ext-json": "*"
   },
   "autoload": {
     "psr-4": {

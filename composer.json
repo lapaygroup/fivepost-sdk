@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "LapayGroup\\FivePostSdk\\\\": "src/"
+      "LapayGroup\\FivePostSdk\\": "src/"
     }
   }
 }

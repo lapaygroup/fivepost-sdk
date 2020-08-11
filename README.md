@@ -20,9 +20,10 @@
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.1.3 - Исправление в composer.json;
 - 0.1.2 - Исправление опечаток;  
 - 0.1.1 - Исправлена зависимость с Monolog;  
-- 0.1.0 - Первая Alfa-версия SDK;  
+- 0.1.0 - Первая Alfa-версия SDK.  
 
 # Установка  
 Для установки можно использовать менеджер пакетов Composer
@@ -33,7 +34,7 @@
 <a name="configuration"><h1>Конфигурация</h1></a>  
 
 Для работы с API необходимо получить api-key у персонального менеджера при заключении договора.    
-По api-key необходимо получить токен в формате JWT и сохранить его. Токен живет 1 час с момент издания.   
+По api-key необходимо получить токен в формате JWT и сохранить его. Токен живет 1 час с момента издания.   
 
 ```php
 try {
@@ -49,8 +50,8 @@ try {
 catch (\LapayGroup\FivePostSdk\Exception\FivePostException $e) {
     // Обработка ошибки вызова API 5post
     // $e->getMessage(); текст ошибки 
-    // $e->getCode(); http код ответа сервиса BB
-    // $e->getRawResponse(); // ответ сервера BB как есть (http request body)
+    // $e->getCode(); http код ответа сервиса 5post
+    // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
 }
 
 catch (\Exception $e) {

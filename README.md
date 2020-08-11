@@ -6,7 +6,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/lapaygroup/fivepost-sdk/v/stable)](https://packagist.org/packages/lapaygroup/fivepost-sdk)
 [![Total Downloads](https://poser.pugx.org/lapaygroup/fivepost-sdk/downloads)](https://packagist.org/packages/lapaygroup/fivepost-sdk)
-[![License](https://poser.pugx.org/wildtuna/lapaygroup/fivepost-sdk/license)](https://packagist.org/packages/lapaygroup/fivepost-sdk)
+[![License](https://poser.pugx.org/lapaygroup/fivepost-sdk/license)](https://packagist.org/packages/lapaygroup/fivepost-sdk)
 [![Telegram Chat](https://img.shields.io/badge/telegram-chat-blue.svg?logo=telegram)](https://t.me/phpboxberrysdk)
 
 # SDK для [интеграции с программным комплексом 5post](http://fivepost.ru).  

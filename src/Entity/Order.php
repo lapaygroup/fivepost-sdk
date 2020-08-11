@@ -116,19 +116,19 @@ class Order
         if (!empty($this->planned_receive_date)) {
             $params['plannedReceiveDate'] = $this->planned_receive_date
                     ->setTimezone((new \DateTimeZone('UTC')))
-                    ->format('c') . 'Z';
+                    ->format('Y-m-d').'T'.$this->planned_receive_date->format('H:i:s').'Z';
         }
 
         if (!empty($this->created_date)) {
             $params['senderCreateDate'] = $this->created_date
                     ->setTimezone((new \DateTimeZone('UTC')))
-                    ->format('c') . 'Z';
+                    ->format('Y-m-d').'T'.$this->created_date->format('H:i:s').'Z';
         }
 
         if (!empty($this->shipment_date)) {
             $params['shipmentDate'] = $this->shipment_date
                     ->setTimezone((new \DateTimeZone('UTC')))
-                    ->format('c') . 'Z';
+                    ->format('Y-m-d').'T'.$this->shipment_date->format('H:i:s').'Z';
         }
 
         // cost block
@@ -138,10 +138,10 @@ class Order
         $params['cost']['price'] = $this->price;
         $params['cost']['priceCurrency'] = $this->price_cur;
 
-        if (empty($this->delivery_cost))
+        if (!empty($this->delivery_cost))
             $params['cost']['deliveryCost'] = $this->delivery_cost;
 
-        if (empty($this->delivery_cost_cur))
+        if (!empty($this->delivery_cost_cur))
             $params['cost']['deliveryCostCurrency'] = $this->delivery_cost_cur;
 
         // cargoes block

@@ -89,7 +89,7 @@ class Client implements LoggerAwareInterface
 
         $resp5post = json_decode($json, true);
 
-        if (empty($resp5post))
+        if (empty($resp5post) && $json != '[]')
             throw new FivePostException('От сервера 5Post при вызове метода ' . $method . ' пришел пустой ответ', $response->getStatusCode(), $json, $request);
 
         if (!empty($resp5post['fault']))
@@ -249,7 +249,7 @@ class Client implements LoggerAwareInterface
     public function getOrderStatuses($order_id = null, $vendor_id = null)
     {
         if (empty($order_id) && empty($vendor_id))
-            throw new \InvalidArgumentException('Оттсутствует обязательный параметр order_id или vendor_id');
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_id или vendor_id');
 
         $params = [];
         if (!empty($vendor_id)) $params['orderId'] = $vendor_id;

@@ -54,7 +54,7 @@ class Place
         $params['price'] = $this->price;
         $params['height'] = $this->height;
         $params['length'] = $this->length;
-        $params['width'] = $this->weight;
+        $params['width'] = $this->width;
         $params['weight'] = $this->weight;
         $params['vat'] = $this->vat_rate;
 

@@ -47,7 +47,7 @@
 ```php
 try {
     // Инициализация API клиента по api-key с таймаутом ожидания ответа 60 секунд
-    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
     $jwt = $Client->getJwt(); // $jwt = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJPcGVuQVBJIiwiYXVkIjoiQTEyMjAxOSEiLCJhcGlrZXkiOiJBSlMxU0lTRHJrNmRyMFpYazVsZVQxdFBGZDRvcXNIYSIsImlzcyI6InVybjovL0FwaWdlZSIsInBhcnRuZXJJZCI6ImIyNzNlYzQ0LThiMDAtNDliMS04OWVlLWQ4Njc5NjMwZDk0OCIsImV4cCI6MTU5NzA4OTk1OCwiaWF0IjoxNTk3MDg2MzU4LCJqdGkiOiI4YTIyZmUzNy1mMzc0LTQ0NDctOGMzMC05N2ZiYjJjOGQ3MTkifQ.G_XQ6vdk7bXfIeMJer7z5WUFqnwlp0qUt6RxaCINZt3b97ZUwPMI1-1FNKQhFwmCHJGpTYyBJKHgtY3uJZOWDAszjPMIHrQrcnJLSzJisNiy6z3cMbpf-UgD-RgebuaYyEgZ81rekL5aUN6r5rqWHbxcxEGY22lTy9uEWwxF_-UdVLEW9O9Z9M9IMlL5_7ACVu-ID2n6zFk_QJnEumJcBSqb6JFh2TWvUPnjnUt5AOiD7gNRXKsBvoC6InSfGoMA461cxu-rAazhNq5fkqFSdrIUyz0kvAb3UI4hs_6xJy9tXPpXIQY7LQUZqQGp5BT8pasfhAJ_4CCATbqxIHmY9w
     $result = \LapayGroup\FivePostSdk\Jwt::decode($jwt); // Получения информации из токена (payload)
 
@@ -80,7 +80,7 @@ catch (\Exception $e) {
     $log = new Logger('name');
     $log->pushHandler(new StreamHandler('log.txt', Logger::INFO));
 
-    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
     $Client->setLogger($log);
     $jwt = $Client->getJwt(); // $jwt = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJPcGVuQVBJIiwiYXVkIjoiQTEyMjAxOSEiLCJhcGlrZXkiOiJBSlMxU0lTRHJrNmRyMFpYazVsZVQxdFBGZDRvcXNIYSIsImlzcyI6InVybjovL0FwaWdlZSIsInBhcnRuZXJJZCI6ImIyNzNlYzQ0LThiMDAtNDliMS04OWVlLWQ4Njc5NjMwZDk0OCIsImV4cCI6MTU5NzA4OTk1OCwiaWF0IjoxNTk3MDg2MzU4LCJqdGkiOiI4YTIyZmUzNy1mMzc0LTQ0NDctOGMzMC05N2ZiYjJjOGQ3MTkifQ.G_XQ6vdk7bXfIeMJer7z5WUFqnwlp0qUt6RxaCINZt3b97ZUwPMI1-1FNKQhFwmCHJGpTYyBJKHgtY3uJZOWDAszjPMIHrQrcnJLSzJisNiy6z3cMbpf-UgD-RgebuaYyEgZ81rekL5aUN6r5rqWHbxcxEGY22lTy9uEWwxF_-UdVLEW9O9Z9M9IMlL5_7ACVu-ID2n6zFk_QJnEumJcBSqb6JFh2TWvUPnjnUt5AOiD7gNRXKsBvoC6InSfGoMA461cxu-rAazhNq5fkqFSdrIUyz0kvAb3UI4hs_6xJy9tXPpXIQY7LQUZqQGp5BT8pasfhAJ_4CCATbqxIHmY9w
     $result = \LapayGroup\FivePostSdk\Jwt::decode($jwt);
@@ -103,7 +103,7 @@ catch (\Exception $e) {
 
 ```php
 <?php
-    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
     // Тариф за возврат невыкупленных отправлений и обработку и возврат отмененных отправлений
     $Client->setReturnPercent(0.5); // 50%    
 
@@ -127,12 +127,12 @@ catch (\Exception $e) {
 - *$returned* - Возврат в случае невыкупа.
 
 **Выходные параметры:**
-- **float** - стоимость доставки  
+- *float* - стоимость доставки  
 
 **Примеры вызова:**
 ```php
 <?php
-    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
     
     // Доставка в 1 тарифную зону весом 1 кг, предоплаченная, невозвратная
     $tariff = $Client->calculationTariff(1, 1000, 0, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_PREPAYMENT, false);
@@ -156,17 +156,17 @@ catch (\Exception $e) {
 Рекомендуем запрашивать не более 500 точек на странице.
 
 **Входные параметры:**
-- **int $number** - Номер страницы / среза (нумерация начинается с 0);
-- **int $size** - Количество точек выдачи на странице / срезе.
+- *int $number* - Номер страницы / среза (нумерация начинается с 0);
+- *int $size* - Количество точек выдачи на странице / срезе.
 
 **Выходные параметры:**
-- **array** - срез ПВЗ из справочника с данными среза.
+- *array* - срез ПВЗ из справочника с данными среза.
 
 **Примеры вызова:**
 ```php
 <?php
     try {
-        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
         $result = $Client->getPvzList(0, 1000); // Больше 2000 за раз получить нельзя
         /**
             Array
@@ -361,7 +361,85 @@ catch (\Exception $e) {
 ```
 
 <a name="create-warehouse"><h1>Создание склада</h1></a>  
-// TODO описание
+Метод **addWarehouses** позволяет добавить склад забора заказов. За один запрос можно добавить несколько складов.  
+
+**Входные параметры:**
+- *Warehouse[]* - массив объектов LapayGroup\FivePostSdk\Entity\Warehouse.
+
+**Выходные параметры:**
+- *array* - Результат создания складов
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        $warehouse = new \LapayGroup\FivePostSdk\Entity\Warehouse();
+        $warehouse->setId('WH001');
+        $warehouse->setName('Склад ООО Ромашка');
+        $warehouse->setCountryId('RU');
+        $warehouse->setRegionCode(77);
+        $warehouse->setFederalDistrict('Москва');
+        $warehouse->setRegion('Москва');
+        $warehouse->setZipCode(111024);
+        $warehouse->setCity('Москва');
+        $warehouse->setStreet('ул. 5 Кабельная');
+        $warehouse->setHouse('1');
+        $warehouse->setLatitude('55.123456');
+        $warehouse->setLongitude('37.123456');
+        $warehouse->setPhone('+74951234567');
+        $warehouse->setTimeZone('+03:00');
+    
+        for ($i = 1; $i < 6; $i++) {
+            $workDay = new \LapayGroup\FivePostSdk\Entity\WorkingDay();
+            $workDay->setDay($i); // 1 - понедельник, 7 - воскресенье
+            $workDay->setTimeFrom('08:00:00');
+            $workDay->setTimeTill('17:00:00');
+            $warehouse->setWorkingDay($workDay);
+        }
+    
+        $result = $Client->addWarehouses([$warehouse->asArr()]);
+        /** Успешный ответ
+        Array
+        (
+            [0] => Array
+                (
+                    [id] => 485cee56-a0e8-306b-ffc0-93bed958307a
+                    [status] => OK
+                    [description] =>
+                )
+
+        )
+        **/
+        
+        /** Ответ в случе ошибки
+        Array
+        (
+            [0] => Array
+                (
+                    [id] => ab58e4de-8bc8-0c2e-ac07-4ab458cca5a3
+                    [status] => FAILED
+                    [description] => Склад с таким идентификатором уже существует (partnreLocationId = 123456)
+                )
+
+        )
+        **/
+
+
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+````
+
 
 <a name="create-order"><h1>Создание заказа</h1></a>  
 // TODO описание

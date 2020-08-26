@@ -364,7 +364,7 @@ catch (\Exception $e) {
 Метод **addWarehouses** позволяет добавить склад забора заказов. За один запрос можно добавить несколько складов.  
 
 **Входные параметры:**
-- *Warehouse[]* - массив объектов LapayGroup\FivePostSdk\Entity\Warehouse.
+- *Warehouse[]* - массив объектов [LapayGroup\FivePostSdk\Entity\Warehouse](src/Entity/Warehouse.php).
 
 **Выходные параметры:**
 - *array* - Результат создания складов
@@ -412,7 +412,7 @@ catch (\Exception $e) {
         )
         **/
         
-        /** Ответ в случе ошибки
+        /** Ответ при ошибке
         Array
         (
             [0] => Array
@@ -442,13 +442,254 @@ catch (\Exception $e) {
 
 
 <a name="create-order"><h1>Создание заказа</h1></a>  
-// TODO описание
+Метод **createOrders** позволяет создать заказ. За один запрос можно создать несколько заказов.  
+
+**Входные параметры:**
+- *Order[]* - массив объектов [LapayGroup\FivePostSdk\Entity\Order](src/Entity/Order.php).
+
+**Выходные параметры:**
+- *array* - Результат создания заказов
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        $Order = new \LapayGroup\FivePostSdk\Entity\Order();
+        $Order->setId('1234567892');
+        $Order->setCompanyName('Ромашка');
+        $Order->setNumber('ORD-123456');
+        $Order->setFio('Иванов Иван Иванович');
+        $Order->setPhone('89260120934');
+        $Order->setEmail('test@test.ru');
+        $Order->setPaymentValue(0);
+        $Order->setPaymentCur('RUB');
+        $Order->setPaymentType(\LapayGroup\FivePostSdk\Entity\Order::P_TYPE_PREPAYMENT);
+        $Order->setPrice(1000);
+        $Order->setPriceCur('RUB');
+        $Order->setPvzId('00598559-f57b-4e23-9891-0d6f60bc455c');
+        $Order->setWarehouseId('WH001');
+        $Order->setShipmentDate(new DateTime('2020-08-15'));
+        $Order->setUndeliverableOption(\LapayGroup\FivePostSdk\Entity\Order::UNDELIVERED_RETURN);
+    
+        $Place = new \LapayGroup\FivePostSdk\Entity\Place();
+        $Place->setBarcode('32270000000001');
+        $Place->setId('11300000294');
+        $Place->setPrice(1000);
+        $Place->setVatRate(20);
+        $Place->setCurrency('RUB');
+        $Place->setHeight(20);
+        $Place->setLength(130);
+        $Place->setWidth(60);
+        $Place->setWeight(100000);
+    
+        $item = new \LapayGroup\FivePostSdk\Entity\Item();
+        $item->setBarcode('32270000000001');
+        $item->setQuantity(1);
+        $item->setCodeGtg('1020911016032000003592');
+        $item->setName('Силиконовый чехол для iPhone XS');
+        $item->setPrice(1000);
+        $item->setCurrency('RUB');
+        $item->setVatRate(20);
+        $item->setArticul('978-5-00154-080-9');
+    
+        $Place->setItem($item);
+        $Order->setPlace($Place);
+    
+        $result = $Client->createOrders([$Order]);
+        
+        /** Успешный ответ
+        Array
+        (
+            [0] => Array
+                (
+                    [orderId] => 12854f88-1b9c-435c-85ba-c2e345b9f891
+                    [senderOrderId] => 1234567890
+                    [cargoes] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [cargoId] => 048e260e-b0a9-42dd-974e-ebe5d72e0ace
+                                    [senderCargoId] => 11300000294
+                                    [barcode] => 32270000000001
+                                )
+
+                        )
+
+                    [alreadyCreated] =>
+                )
+
+        )
+        **/
+        
+        /** Ответ при ошибке
+        Array
+        (
+            [success] =>
+            [errorCode] => 400
+            [errorMsg] => Element partnerOrder[0].shipmentDate has incorrect value
+        )
+        **/
+
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
 
 <a name="cancel-order"><h1>Отмена заказа</h1></a>  
 // TODO описание
 
-<a name="orders-status"><h1>Статусы заказов</h1></a>  
-// TODO описание
+
+<a name="orders-status"><h1>Статусы заказов</h1></a> 
+Метож **getOrdersStatus** получает последний статус по списку заказов.  
+Заказ можно запросить по своему уникальному номеру или по номеру в системе 5post. 
+ 
+**Входные параметры:**
+- *array[]* - массив массивов с номерами заказов.
+
+**Выходные параметры:**
+- *array* - последний статус заказов
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        // По ID заказа в системе клиента
+        $result = $Client->getOrdersStatus([['order_id' => '1234567891']]);
+    
+        // По ID заказа в системе 5post
+        $result = $Client->getOrdersStatus([['vendor_id' => '12854f88-1b9c-435c-85ba-c2e345b9f891']]);
+        
+        /** Пример ответа 1
+        Array
+        (
+            [0] => Array
+                (
+                    [orderId] => c1ba069d-a1aa-49ae-a562-3dca429823f4
+                    [senderOrderId] => 1234567891
+                    [status] => NEW
+                    [changeDate] => 2020-08-10T13:12:42.414673+03:00
+                    [executionStatus] => CREATED
+                )
+
+        )
+
+        Пример ответа 2
+        Array
+        (
+            [0] => Array
+                (
+                    [status] => REJECTED
+                    [orderId] => c1ba069d-a1aa-49ae-a562-3dca429823f4
+                    [senderOrderId] => 1234567891
+                    [executionStatus] => REJECTED: Ошибка валидации по плановым ВГХ
+                    [changeDate] => 2020-08-10T13:12:43.31964+03:00
+                )
+
+        )
+    
+        Пример ответа 3
+        Array
+        (
+            [0] => Array
+                (
+                    [status] => REJECTED
+                    [orderId] => 12854f88-1b9c-435c-85ba-c2e345b9f891
+                    [senderOrderId] => 1234567890
+                    [executionStatus] => REJECTED: PickupPointDto is null with id = 13e9d62d-1799-4e14-a27b-d218f33de7f6
+                    [changeDate] => 2020-08-10T12:39:12.933568+03:00
+                )
+
+        )
+        **/
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
 
 <a name="order-statuses"><h1>История статусов заказа</h1></a>  
-// TODO описание
+Метод **getOrderStatuses** возвращает полную историю статусов заказа.
+
+**Входные параметры:**
+- *string|null $order_id* - ID заказа;
+- *string|null $vendor_id* - ID заказа в системе 5post.
+
+**Выходные параметры:**
+- *array* - история статусов заказа
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        
+        // По ID заказа в системе клиента
+        $result = $Client->getOrderStatuses('1234567891');
+
+        // По ID заказа в системе 5post
+        $result = $Client->getOrderStatuses(false, '12854f88-1b9c-435c-85ba-c2e345b9f891');
+        
+        /** 
+        Array
+        (
+            [0] => Array
+                (
+                    [orderId] => c1ba069d-a1aa-49ae-a562-3dca429823f4
+                    [senderOrderId] => 1234567891
+                    [status] => REJECTED
+                    [changeDate] => 2020-08-10T13:12:43.31964+03:00
+                    [executionStatus] => REJECTED: PICKUP_POINT_SIZE_VALIDATION
+                )
+    
+            [1] => Array
+                (
+                    [orderId] => c1ba069d-a1aa-49ae-a562-3dca429823f4
+                    [senderOrderId] => 1234567891
+                    [status] => REJECTED
+                    [changeDate] => 2020-08-10T13:12:43.31447+03:00
+                    [executionStatus] => CREATED: PICKUP_POINT_SIZE_VALIDATION
+                )
+    
+            [2] => Array
+                (
+                    [orderId] => c1ba069d-a1aa-49ae-a562-3dca429823f4
+                    [senderOrderId] => 1234567891
+                    [status] => NEW
+                    [changeDate] => 2020-08-10T13:12:42.414673+03:00
+                    [executionStatus] => CREATED
+                )
+    
+        )
+        **/
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```

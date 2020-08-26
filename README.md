@@ -18,6 +18,12 @@
 - [Конфигурация](#configuration)  
 - [Отладка](#debugging)  
 - [Расчет тарифа](#tariffs)  
+- [Список точек выдачи](#pvz-list)  
+- [Создание склада](#create-warehouse)   
+- [Создание заказа](#create-order)   
+- [Отмена заказа](#cancel-order)   
+- [Статусы заказов](#orders-status)   
+- [История статусов заказа](#order-statuses)     
 
 
 <a name="links"><h1>Changelog</h1></a>  
@@ -144,3 +150,227 @@ catch (\Exception $e) {
     $tariff = $Client->calculationTariff(1, 2000, 1000, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_CASHLESS, false);
 
 ```
+
+<a name="pvz-list"><h1>Список точек выдачи</h1></a>   
+Метод **getPvzList** возвращает список постаматов и пунктов выдачи заказов.   
+Рекомендуем запрашивать не более 500 точек на странице.
+
+**Входные параметры:**
+- **int $number** - Номер страницы / среза (нумерация начинается с 0);
+- **int $size** - Количество точек выдачи на странице / срезе.
+
+**Выходные параметры:**
+- **array** - срез ПВЗ из справочника с данными среза.
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+        $result = $Client->getPvzList(0, 1000); // Больше 2000 за раз получить нельзя
+        /**
+            Array
+            (
+                [content] => Array
+                    (
+                        [0] => Array
+                            (
+                                [id] => 000fa5c9-2817-4d8a-8dc4-5ea5b8ea10b2
+                                [name] => S165 - Пятерочка
+                                [partnerName] => Tobacco
+                                [type] => TOBACCO
+                                [workHours] => Array
+                                    (
+                                        [0] => Array
+                                            (
+                                                [day] => MON
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [1] => Array
+                                            (
+                                                [day] => TUE
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [2] => Array
+                                            (
+                                                [day] => WED
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [3] => Array
+                                            (
+                                                [day] => THU
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [4] => Array
+                                            (
+                                                [day] => FRI
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [5] => Array
+                                            (
+                                                [day] => SAT
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                        [6] => Array
+                                            (
+                                                [day] => SUN
+                                                [opensAt] => 08:30:00
+                                                [closesAt] => 22:00:00
+                                                [timezone] => Europe/Moscow
+                                                [timezoneOffset] => +03:00
+                                            )
+            
+                                    )
+            
+                                [fullAddress] => Тихорецк г, Октябрьская ул, 50
+                                [shortAddress] => Октябрьская ул, 50
+                                [address] => Array
+                                    (
+                                        [country] => Россия
+                                        [zipCode] => 352120
+                                        [region] => Краснодарский край
+                                        [city] => Тихорецк г
+                                        [regionType] => край
+                                        [cityType] => г
+                                        [street] => Октябрьская ул
+                                        [house] => 50
+                                        [building] =>
+                                        [metroStation] =>
+                                        [lat] => 45.856114
+                                        [lng] => 40.128113
+                                    )
+            
+                                [additional] => Выдача заказов осуществляется на кассе магазина «Пятёрочка»
+                                [openDate] => 2019-08-08T00:00:00
+                                [cellLimits] => Array
+                                    (
+                                        [maxCellWidth] => 401
+                                        [maxCellHeight] => 361
+                                        [maxCellLength] => 611
+                                        [maxWeight] => 15000000
+                                    )
+            
+                                [returnAllowed] =>
+                                [timezone] => Europe/Moscow
+                                [timezoneOffset] => +03:00
+                                [phone] => 88005555505
+                                [cashAllowed] =>
+                                [cardAllowed] =>
+                                [loyaltyAllowed] =>
+                                [extStatus] => ACTIVE
+                                [localityFiasCode] => 1d3511c8-b1dc-49c5-b5fb-3533ed4ce3c4
+                                [createDate] => 2020-03-20T15:40:12.221556+03:00
+                                [deliverySL] => Array
+                                    (
+                                        [0] => Array
+                                            (
+                                                [sl] => 4
+                                            )
+            
+                                    )
+            
+                                [rate] => Array
+                                    (
+                                        [0] => Array
+                                            (
+                                                [id] => 65eee565-e124-4662-8dec-8ac187881aea
+                                                [pickupPointId] => 000fa5c9-2817-4d8a-8dc4-5ea5b8ea10b2
+                                                [zone] => 5
+                                                [rateType] => Hub_Bogorodsk
+                                                [rateValue] => 0
+                                                [rateExtraValue] => 0
+                                                [rateCurrency] => RUB
+                                                [startDate] => 2020-07-01
+                                             )
+            
+                                    )
+            
+                            )
+            
+                    )
+            
+                [pageable] => Array
+                    (
+                        [sort] => Array
+                            (
+                                [sorted] => 1
+                                [unsorted] =>
+                                [empty] =>
+                            )
+            
+                        [pageNumber] => 0
+                        [pageSize] => 10
+                        [offset] => 0
+                        [paged] => 1
+                        [unpaged] =>
+                    )
+            
+                [totalPages] => 967
+                [totalElements] => 9661
+                [last] =>
+                [sort] => Array
+                    (
+                        [sorted] => 1
+                        [unsorted] =>
+                        [empty] =>
+                    )
+            
+                [number] => 0
+                [numberOfElements] => 1
+                [first] => 1
+                [size] => 10
+                [empty] =>
+            )
+        **/
+    }
+
+    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
+
+<a name="create-warehouse"><h1>Создание склада</h1></a>  
+// TODO описание
+
+<a name="create-order"><h1>Создание заказа</h1></a>  
+// TODO описание
+
+<a name="cancel-order"><h1>Отмена заказа</h1></a>  
+// TODO описание
+
+<a name="orders-status"><h1>Статусы заказов</h1></a>  
+// TODO описание
+
+<a name="order-statuses"><h1>История статусов заказа</h1></a>  
+// TODO описание

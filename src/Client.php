@@ -13,6 +13,7 @@ use Psr\Log\LoggerAwareTrait;
 class Client implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
+    use TariffsTrait;
 
     /** @var string|null */
     private $jwt = null;

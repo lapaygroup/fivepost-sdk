@@ -17,9 +17,11 @@
 - [Changelog](#changelog)    
 - [Конфигурация](#configuration)  
 - [Отладка](#debugging)  
+- [Расчет тарифа](#tariffs)  
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.2.0 - Добавлен расчет тарифа;
 - 0.1.3 - Исправление в composer.json;
 - 0.1.2 - Исправление опечаток;  
 - 0.1.1 - Исправлена зависимость с Monolog;  
@@ -82,5 +84,63 @@ catch (\Exception $e) {
 ```
 [2020-08-10T10:19:15.236829+00:00] 5post-api.INFO: 5Post API POST request /api/v1/getOrderStatus: [{"senderOrderId":"1234567891"}] [] []
 [2020-08-10T10:19:15.447289+00:00] 5post-api.INFO: 5Post API response /api/v1/getOrderStatus: [{"status":"REJECTED","orderId":"c1ba069d-a1aa-49ae-a562-3dca429823f4","senderOrderId":"1234567891","executionStatus":"REJECTED: Ошибка валидации по плановым ВГХ","changeDate":"2020-08-10T13:12:43.31964+03:00"}] {"Date":["Mon, 10 Aug 2020 10:19:15 GMT"],"Content-Type":["application/json"],"Connection":["keep-alive"],"Set-Cookie":["d46d09d93a8e8174c6300478f336d992=faa2eebdd2dfdd0ce10a284ccfcbdaea; path=/; HttpOnly; Secure","TS01ab71c3=01a93f75476aa0457856d9bf9d665b19c12ba5ec238a9a08d7fe077961dddc634278c540aed3dd2010a567571da4de02529e7117e9f863d3ac1f9716c0e5a25f8446c685c6; Path=/; Domain=.api-omni.x5.ru"],"Access-Control-Allow-Origin":[""],"Access-Control-Allow-Headers":["origin, x-requested-with, accept, content-type, authorization"],"Access-Control-Max-Age":["3628800"],"Access-Control-Allow-Credentials":["true"],"Access-Control-Allow-Methods":["GET, PUT, POST, DELETE"],"strict-transport-security":["max-age=31536000"],"x-frame-options":["SAMEORIGIN"],"Transfer-Encoding":["chunked"],"http_status":200} []
+
+```
+
+
+<a name="tariffs"><h1>Расчет тарифа</h1></a>  
+Тарифы рассчитываются по тарифным зонам по данным на [сайте 5post](https://fivepost.ru/). 
+При заключении договора могут быть индивидуальные тарифы, их можно применить используя метод **setZoneTariffs** в объекте **LapayGroup\FivePostSdk\Client**.
+Этот метод принимает массив тарифов [в таком виде](https://github.com/lapaygroup/fivepost-sdk/blob/master/src/TariffsTrait.php#L12).
+
+Для изменения тарифа на услуги используйте методы ниже:
+
+```php
+<?php
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    // Тариф за возврат невыкупленных отправлений и обработку и возврат отмененных отправлений
+    $Client->setReturnPercent(0.5); // 50%    
+
+    // Сбор за объявленную ценность
+    $Client->setValuatedAmountPercent(0.005); // 0.5%
+
+    // Вознаграждение за прием платежа с использованием банковских карт
+    $Client->setCardPercent(0.0264); // 2.64%
+
+    // Вознаграждение за прием наложенного платежа наличными
+    $Client->setCashPercent(0.0192); // 1.92%
+```
+
+Для расчета стоимости доставки используйте метод **calculationTariff**.   
+ 
+**Входные параметры:**
+- *$zone* - тарифная зона;  
+- *$weight* - вес заказа в граммах;  
+- *$amount* - выкупная стоимость заказа;
+- *$payment_type* - способ оплаты (оплачен/картой/наличными);
+- *$returned* - Возврат в случае невыкупа.
+
+**Выходные параметры:**
+- **float** - стоимость доставки  
+
+**Примеры вызова:**
+```php
+<?php
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_PROD);
+    
+    // Доставка в 1 тарифную зону весом 1 кг, предоплаченная, невозвратная
+    $tariff = $Client->calculationTariff(1, 1000, 0, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_PREPAYMENT, false);
+
+    // Доставка в 1 тарифную зону весом 4 кг, предоплаченная, невозвратная
+    $tariff = $Client->calculationTariff(1, 4000, 0, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_PREPAYMENT, false);
+
+    // Доставка в 1 тарифную зону весом 4 кг, предоплаченная, c возвратом в случае невыкупа
+    $tariff = $Client->calculationTariff(1, 4000, 0, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_PREPAYMENT, true);
+
+    // Доставка в 1 тарифную зону весом 2 кг, стоимостью 1000 рублей, невозвратная, оплата наличными
+    $tariff = $Client->calculationTariff(1, 2000, 1000, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_CASH, false);
+
+    // Доставка в 1 тарифную зону весом 2 кг, стоимостью 1000 рублей, невозвратная, оплата картой
+    $tariff = $Client->calculationTariff(1, 2000, 1000, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_CASHLESS, false);
 
 ```

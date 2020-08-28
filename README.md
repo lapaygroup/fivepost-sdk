@@ -13,6 +13,8 @@
 
 Посмотреть все проекты или подарить автору кофе можно [тут](https://lapay.group/opensource).    
 
+[Документация к API](https://fivepost.ru/developers) 5post.    
+
 # Содержание    
 - [Changelog](#changelog)    
 - [Конфигурация](#configuration)  

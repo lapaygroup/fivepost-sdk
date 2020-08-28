@@ -43,7 +43,7 @@ class Place
     {
         $params = [];
 
-        foreach (['id', 'barcode', 'currency', 'price', 'currency', 'height', 'length', 'width', 'weight', 'vat_rate'] as $property) {
+        foreach (['id', 'barcode', 'currency', 'price', 'currency', 'height', 'length', 'width', 'weight'] as $property) {
             if (is_null($this->$property))
                 throw new \InvalidArgumentException('У места не заполнено обязательное поле '.$property);
         }

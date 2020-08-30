@@ -221,6 +221,7 @@ class Client implements LoggerAwareInterface
      * @return array
      * @throws FivePostException
      * @throws \InvalidArgumentException
+     * @deprecated Будет удален в версии 0.5.0 используйте новые методы getOrdersStatusByOrderId и getOrdersStatusByVendorId
      */
     public function getOrdersStatus($order_id_list)
     {
@@ -239,13 +240,48 @@ class Client implements LoggerAwareInterface
     }
 
     /**
+     * Информация о статусе заказов по ID клиента
+     *
+     * @param array $order_id_list - массив ID заказов в системе клиента
+     * @return array
+     * @throws FivePostException
+     */
+    public function getOrdersStatusByOrderId($order_id_list)
+    {
+        $params = [];
+        foreach ($order_id_list as $i => $order_id) {
+            $params[$i]['senderOrderId'] = $order_id;
+        }
+
+        return $this->callApi('POST', '/api/v1/getOrderStatus', $params);
+    }
+
+    /**
+     * Информация о статусе заказов по ID клиента
+     *
+     * @param array $vendor_id_list - массив ID заказов в системе 5post
+     * @return array
+     * @throws FivePostException
+     */
+    public function getOrdersStatusByVendorId($vendor_id_list)
+    {
+        $params = [];
+        foreach ($vendor_id_list as $i => $vendor_id) {
+            $params[$i]['orderId'] = $vendor_id;
+        }
+
+        return $this->callApi('POST', '/api/v1/getOrderStatus', $params);
+    }
+
+    /**
      * История статусов заказа
      *
-     * @param string|null $order_id - ID заказа
+     * @param string|null $order_id - ID заказа в системе клиента
      * @param string|null $vendor_id - ID заказа в системе 5post
      * @return array
      * @throws FivePostException
      * @throws \InvalidArgumentException
+     * @deprecated Будет удален в версии 0.5.0 используйте новые методы getOrderStatusesByOrderId и getOrderStatusesByVendorId
      */
     public function getOrderStatuses($order_id = null, $vendor_id = null)
     {
@@ -257,5 +293,39 @@ class Client implements LoggerAwareInterface
         if (!empty($order_id)) $params['senderOrderId'] = $order_id;
 
         return $this->callApi('POST', '/api/v1/getOrderHistory', $params);
+    }
+
+
+    /**
+     * История статусов заказа
+     *
+     * @param string $order_id - ID заказа в системе клиента
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getOrderStatusesByOrderId($order_id)
+    {
+        if (empty($order_id))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_id');
+
+        return $this->callApi('POST', '/api/v1/getOrderHistory', ['senderOrderId' => $order_id]);
+    }
+
+
+    /**
+     * История статусов заказа
+     *
+     * @param string $vendor_id - ID заказа в системе 5post
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getOrderStatusesByVendorId($vendor_id)
+    {
+        if (empty($vendor_id))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_id');
+
+        return $this->callApi('POST', '/api/v1/getOrderHistory', ['orderId' => $vendor_id]);
     }
 }

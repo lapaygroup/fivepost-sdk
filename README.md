@@ -29,6 +29,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.3.0 - Добавлен Enum статусов заказа, изменены функции работы с статусами заказов;  
 - 0.2.1 - Исправлена ошибка с обязательным заполнение налоговой ставки у места;
 - 0.2.0 - Добавлен расчет тарифа;
 - 0.1.3 - Исправление в composer.json;
@@ -568,11 +569,22 @@ catch (\Exception $e) {
     try {
         $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
         // По ID заказа в системе клиента
-        $result = $Client->getOrdersStatus([['order_id' => '1234567891']]);
-    
+        $result = $Client->getOrdersStatusByOrderId(['1234567891']);
+
         // По ID заказа в системе 5post
-        $result = $Client->getOrdersStatus([['vendor_id' => '12854f88-1b9c-435c-85ba-c2e345b9f891']]);
+        $result = $Client->getOrdersStatusByVendorId(['12854f88-1b9c-435c-85ba-c2e345b9f891']);
         
+        foreach ($result as $status) {
+            // Проверка на конечный статусы
+            if (\LapayGroup\FivePostSdk\Enum\OrderStatus::isFinal($status['executionStatus'])) {
+                // TODO  логика обработки конечного статуса, после которого запрос статусов не требуется
+            }
+    
+            // Получение текстового описания статуса
+            $status_text   = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['status']);
+            $exstatus_text = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['executionStatus']);
+        }
+
         /** Пример ответа 1
         Array
         (
@@ -646,11 +658,22 @@ catch (\Exception $e) {
         $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
         
         // По ID заказа в системе клиента
-        $result = $Client->getOrderStatuses('1234567891');
+        $result = $Client->getOrderStatusesByOrderId('1234567891');
 
         // По ID заказа в системе 5post
-        $result = $Client->getOrderStatuses(false, '12854f88-1b9c-435c-85ba-c2e345b9f891');
+        $result = $Client->getOrderStatusesByVendorId('12854f88-1b9c-435c-85ba-c2e345b9f891');
         
+        foreach ($result as $status) {
+            // Проверка на конечный статусы
+            if (\LapayGroup\FivePostSdk\Enum\OrderStatus::isFinal($status['executionStatus'])) {
+                // TODO  логика обработки конечного статуса, после которого запрос статусов не требуется
+            }
+    
+            // Получение текстового описания статуса
+            $status_text   = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['status']);
+            $exstatus_text = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['executionStatus']);
+        }
+
         /** 
         Array
         (

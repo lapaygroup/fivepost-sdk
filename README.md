@@ -29,6 +29,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.4.0 - Добавлена возможность сохранения JWT токена и создания своих классов для сохранения;  
 - 0.3.0 - Добавлен Enum статусов заказа, изменены функции работы с статусами заказов;  
 - 0.2.1 - Исправлена ошибка с обязательным заполнение налоговой ставки у места;
 - 0.2.0 - Добавлен расчет тарифа;
@@ -46,7 +47,10 @@
 <a name="configuration"><h1>Конфигурация</h1></a>  
 
 Для работы с API необходимо получить api-key у персонального менеджера при заключении договора.    
-По api-key необходимо получить токен в формате JWT и сохранить его. Токен живет 1 час с момента издания.   
+По api-key необходимо получить токен в формате JWT и сохранить его. Токен живет 1 час с момента издания.     
+
+SDK позволяет сохранять JWT, для этого необходимо использовать Helper, который должен реализовывать [JwtSaveInterface](https://github.com/lapaygroup/fivepost-sdk/blob/master/src/Helpers/JwtSaveInterface.php).    
+В SDK встроен Helper для сохранения токена в временный файл [JwtSaveFileHelper](https://github.com/lapaygroup/fivepost-sdk/blob/master/src/Helpers/JwtSaveFileHelper.php).    
 
 ```php
 try {
@@ -57,6 +61,15 @@ try {
 
     // Ранее полученный токен можно добавить в клиент специльным методом
     $Client->setJwt($jwt);
+
+    // Токен можно сохранять в файл используя Helper
+    $jwtHelper = new \LapayGroup\FivePostSdk\Helpers\JwtSaveFileHelper();
+    // Можно задать путь до временного файла отличный от заданного по умолчанию
+    $jwtHelper->setTmpFile('/tmp/saved_jwt.txt');
+
+    $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST, $jwtHelper);
+    $jwt = $Client->getJwt(); // $jwt = eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJPcGVuQVBJIiwiYXVkIjoiQTEyMjAxOSEiLCJhcGlrZXkiOiJBSlMxU0lTRHJrNmRyMFpYazVsZVQxdFBGZDRvcXNIYSIsImlzcyI6InVybjovL0FwaWdlZSIsInBhcnRuZXJJZCI6ImIyNzNlYzQ0LThiMDAtNDliMS04OWVlLWQ4Njc5NjMwZDk0OCIsImV4cCI6MTU5NzA4OTk1OCwiaWF0IjoxNTk3MDg2MzU4LCJqdGkiOiI4YTIyZmUzNy1mMzc0LTQ0NDctOGMzMC05N2ZiYjJjOGQ3MTkifQ.G_XQ6vdk7bXfIeMJer7z5WUFqnwlp0qUt6RxaCINZt3b97ZUwPMI1-1FNKQhFwmCHJGpTYyBJKHgtY3uJZOWDAszjPMIHrQrcnJLSzJisNiy6z3cMbpf-UgD-RgebuaYyEgZ81rekL5aUN6r5rqWHbxcxEGY22lTy9uEWwxF_-UdVLEW9O9Z9M9IMlL5_7ACVu-ID2n6zFk_QJnEumJcBSqb6JFh2TWvUPnjnUt5AOiD7gNRXKsBvoC6InSfGoMA461cxu-rAazhNq5fkqFSdrIUyz0kvAb3UI4hs_6xJy9tXPpXIQY7LQUZqQGp5BT8pasfhAJ_4CCATbqxIHmY9w
+        
 }
 
 catch (\LapayGroup\FivePostSdk\Exception\FivePostException $e) {

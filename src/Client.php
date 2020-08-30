@@ -6,6 +6,8 @@ use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
 use LapayGroup\FivePostSdk\Entity\Order;
 use LapayGroup\FivePostSdk\Exception\FivePostException;
+use LapayGroup\FivePostSdk\Exception\TokenException;
+use LapayGroup\FivePostSdk\Helpers\JwtSaveInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -24,10 +26,14 @@ class Client implements LoggerAwareInterface
     /** @var \GuzzleHttp\Client|null */
     private $httpClient = null;
 
+    /** @var JwtSaveInterface|null */
+    private $jwtHelper = null;
+
+
     const API_URI_TEST = 'https://api-preprod-omni.x5.ru';
     const API_URI_PROD = 'https://api-omni.x5.ru';
 
-    const DATA_JSON = 'json';
+    const DATA_JSON   = 'json';
     const DATA_PARAMS = 'form_params';
 
     /**
@@ -36,8 +42,9 @@ class Client implements LoggerAwareInterface
      * @param string $api_key - APIKEY в системе 5post
      * @param int $timeout - таймаут ожидания ответа от серверов 5post в секундах
      * @param string $api_uri - адрес API (тествоый или продуктовый)
+     * @param JwtSaveInterface|null $jwtHelper - помощник для сохранения токена
      */
-    public function __construct($api_key, $timeout = 300, $api_uri = self::API_URI_PROD)
+    public function __construct($api_key, $timeout = 300, $api_uri = self::API_URI_PROD, $jwtHelper = null)
     {
         $this->api_key = $api_key;
         $this->stack = new HandlerStack();
@@ -50,6 +57,9 @@ class Client implements LoggerAwareInterface
             'timeout' => $timeout,
             'exceptions' => false
         ]);
+
+        if ($jwtHelper)
+            $this->jwtHelper = $jwtHelper;
     }
 
     /**
@@ -128,11 +138,22 @@ class Client implements LoggerAwareInterface
 
     public function getJwt()
     {
+        if ($this->jwtHelper)
+            $this->jwt = $this->jwtHelper->getToken();
+
         if ($this->jwt) {
-            Jwt::decode($this->jwt);
+            try {
+                Jwt::decode($this->jwt);
+            }
+
+            catch (TokenException $e) {
+                $this->jwt = $this->generateJwt();
+            }
         } else {
             $this->jwt = $this->generateJwt();
         }
+
+        Jwt::decode($this->jwt);
 
         return $this->jwt;
     }
@@ -154,6 +175,10 @@ class Client implements LoggerAwareInterface
     private function generateJwt()
     {
         $response = $this->callApi('POST', '/jwt-generate-claims/rs256/1?apikey='.$this->api_key, ['subject' => 'OpenAPI', 'audience' => 'A122019!'], self::DATA_PARAMS);
+
+        if ($this->jwtHelper)
+            $this->jwt = $this->jwtHelper->setToken($response['jwt']);
+
         return $response['jwt'];
     }
 

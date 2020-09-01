@@ -1,8 +1,6 @@
 <?php
 namespace LapayGroup\FivePostSdk\Entity;
 
-use http\Exception\InvalidArgumentException;
-
 class Item
 {
     /** @var string|null  */

@@ -1,6 +1,6 @@
 <?php
 
-namespace LapayGroup\FivePostSdk\Exception;
+namespace LapayGroup\FivePostSdk\Exceptions;
 
 class FivePostException extends \Exception
 {

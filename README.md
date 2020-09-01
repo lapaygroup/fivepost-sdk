@@ -29,6 +29,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.4.1 - Исправлены ошибки в namespace файлов;  
 - 0.4.0 - Добавлена возможность сохранения JWT токена и создания своих классов для сохранения;  
 - 0.3.0 - Добавлен Enum статусов заказа, изменены функции работы с статусами заказов;  
 - 0.2.1 - Исправлена ошибка с обязательным заполнение налоговой ставки у места;
@@ -72,7 +73,7 @@ try {
         
 }
 
-catch (\LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+catch (\LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
     // Обработка ошибки вызова API 5post
     // $e->getMessage(); текст ошибки 
     // $e->getCode(); http код ответа сервиса 5post
@@ -365,7 +366,7 @@ catch (\Exception $e) {
         **/
     }
 
-    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
         // Обработка ошибки вызова API 5post
         // $e->getMessage(); // текст ошибки 
         // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
@@ -445,7 +446,7 @@ catch (\Exception $e) {
 
     }
      
-    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
         // Обработка ошибки вызова API 5post
         // $e->getMessage(); // текст ошибки 
         // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
@@ -550,7 +551,7 @@ catch (\Exception $e) {
 
     }
      
-    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
         // Обработка ошибки вызова API 5post
         // $e->getMessage(); // текст ошибки 
         // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
@@ -642,7 +643,7 @@ catch (\Exception $e) {
         **/
     }
      
-    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
         // Обработка ошибки вызова API 5post
         // $e->getMessage(); // текст ошибки 
         // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
@@ -721,7 +722,7 @@ catch (\Exception $e) {
         **/
     }
      
-    catch (LapayGroup\FivePostSdk\Exception\FivePostException $e) {
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
         // Обработка ошибки вызова API 5post
         // $e->getMessage(); // текст ошибки 
         // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе

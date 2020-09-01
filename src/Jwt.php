@@ -2,7 +2,7 @@
 
 namespace LapayGroup\FivePostSdk;
 
-use LapayGroup\FivePostSdk\Exception\TokenException;
+use LapayGroup\FivePostSdk\Exceptions\TokenException;
 
 class Jwt
 {

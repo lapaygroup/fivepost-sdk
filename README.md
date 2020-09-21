@@ -29,6 +29,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>  
+- 0.4.2 - Совместимость с Guzzle 7;  
 - 0.4.1 - Исправлены ошибки в namespace файлов;  
 - 0.4.0 - Добавлена возможность сохранения JWT токена и создания своих классов для сохранения;  
 - 0.3.0 - Добавлен [Enum](https://github.com/lapaygroup/fivepost-sdk/blob/master/src/Enum/OrderStatus.php) статусов заказа, изменены функции работы с статусами заказов;  

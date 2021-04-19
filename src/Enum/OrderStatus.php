@@ -70,10 +70,15 @@ class OrderStatus
      * @param string $code - код статуса 5post
      * @return string - текстовое описание статуса
      */
-    static public function getNameByCode($code)
+    static public function getNameByCode(&$code)
     {
+        if (strpos($code, ':') !== false) {
+            $code = explode(':', $code);
+            $code = trim($code[0]);
+        }
+
         if (empty(self::$main_status_list[$code]) && empty(self::$status_list[$code]))
-            throw new \InvalidArgumentException('Передан не существующий код статуса заказа 5post');
+            throw new \InvalidArgumentException('Передан не существующий код статуса заказа 5post: '.$code);
 
         if (!empty(self::$main_status_list[$code])) return self::$main_status_list[$code];
 

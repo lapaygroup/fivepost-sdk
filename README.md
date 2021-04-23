@@ -1,5 +1,5 @@
 
-<a href="https://lapay.group/"><img align="left" width="200" src="https://lapay.group/lglogo.jpg"></a>
+<a href="https://lapay.group/"><img align="left" width="200" src="https://lapay.group/img/lapaygroup.svg"></a>
 <a href="http://fivepost.ru"><img align="right" width="200" src="https://lapay.group/fivepostlogo.png"></a>    
 
 <br /><br /><br />

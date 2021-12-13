@@ -16,6 +16,9 @@ class Item
     private $origin_country = null; // Страна производства
 
     /** @var string|null  */
+    private $upi_code = null; // Код маркировки товара согласно Честному Знаку.  Принимаемый формат значений только base64.
+
+    /** @var string|null  */
     private $name = null; // Название товара
 
     /** @var float|null  */
@@ -65,6 +68,9 @@ class Item
 
         if (!empty($this->articul))
             $params['vendorCode'] = $this->articul;
+
+        if (!empty($this->upi_code))
+            $params['productValues'] = $this->upi_code;
 
         $params['name'] = $this->name;
         $params['price'] = $this->price;

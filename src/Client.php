@@ -246,7 +246,7 @@ class Client implements LoggerAwareInterface
      * @return array
      * @throws FivePostException
      * @throws \InvalidArgumentException
-     * @deprecated Будет удален в версии 0.5.0 используйте новые методы getOrdersStatusByOrderId и getOrdersStatusByVendorId
+     * @deprecated Будет удален в версии 0.6.0 используйте новые методы getOrdersStatusByOrderId и getOrdersStatusByVendorId
      */
     public function getOrdersStatus($order_id_list)
     {
@@ -352,5 +352,37 @@ class Client implements LoggerAwareInterface
             throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_id');
 
         return $this->callApi('POST', '/api/v1/getOrderHistory', ['orderId' => $vendor_id]);
+    }
+
+    /**
+     * История статусов заказов по ID заказа в системе клиента
+     *
+     * @param string[] $order_ids - Список ID заказов в системе клиента
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getOrderStatusesByListOrderIds($order_ids)
+    {
+        if (empty($order_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_ids');
+
+        return $this->callApi('POST', '/api/v1/getOrderHistoryMass/bySenderOrderId', ['senderOrderIdList' => $order_ids]);
+    }
+
+    /**
+     * История статусов заказов по ID заказа в системе 5post
+     *
+     * @param string[] $vendor_ids - Список ID заказов в системе 5post
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getOrderStatusesByListVendorIds($vendor_ids)
+    {
+        if (empty($vendor_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
+
+        return $this->callApi('POST', '/api/v1/getOrderHistoryMass/byOrderId', ['orderIdList' => $vendor_ids]);
     }
 }

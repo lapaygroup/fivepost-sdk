@@ -29,6 +29,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>
+- 0.5.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.5.0);
 - 0.4.6 - Совместимость с Guzzle 7.3;   
 - 0.4.5 - Добавлен вывод неизвестного кода статуса в текст исключения. Добавлена заменя executionStatus, если там присутствует описание вместе с кодом;   
 - 0.4.4 - Совместимость с Guzzle 7.2;
@@ -190,7 +191,11 @@ catch (\Exception $e) {
 <?php
     try {
         $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
-        $result = $Client->getPvzList(0, 1000); // Больше 2000 за раз получить нельзя
+        $totalPages = 2;
+        foreach ($i = 0; $i <= $totalPages; $i++) {
+            $result = $Client->getPvzList(0, 1000); // Больше 2000 за раз получить нельзя
+            if (!empty($result['totalPages'])) $totalPages = $result['totalPages']; // Заносим количество страниц из ответа
+        }
         /**
             Array
             (
@@ -725,6 +730,93 @@ catch (\Exception $e) {
     
         )
         **/
+        
+        // По списку ID заказа в системе 5post
+        $result = $Client->getOrderStatusesByListVendorId(['e04be1eb-6ebf-47a6-9069-4b41befd69ec', '951db785-3044-4f74-b008-fafa94c2658c']);
+        
+        // По списку ID заказа в системе клиента
+        $result = $Client->getOrderStatusesByListOrderIds(['2207773', '2207765']);
+        
+        foreach ($result as $i => $order) {
+            foreach ($order['statuses'] as $status) {
+                // Проверка на конечный статусы
+                if (\LapayGroup\FivePostSdk\Enum\OrderStatus::isFinal($status['executionStatus'])) {
+                    // TODO  логика обработки конечного статуса, после которого запрос статусов не требуется
+                }
+        
+                // Получение текстового описания статуса
+                $status_text   = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['status']);
+                $exstatus_text = \LapayGroup\FivePostSdk\Enum\OrderStatus::getNameByCode($status['executionStatus']);
+            }
+        }
+        
+        /**
+        * Array
+        (
+            [0] => Array
+                (
+                    [orderId] => 951db785-3044-4f74-b008-fafa94c2658c
+                    [senderOrderId] => 2207773
+                    [statuses] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:14.788767+03:00
+                                    [status] => NEW
+                                    [executionStatus] => APPROVED
+                                )
+        
+                            [1] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:13.795966+03:00
+                                    [status] => NEW
+                                    [executionStatus] => CREATED
+                                )
+        
+                            [2] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:15.917899+03:00
+                                    [status] => APPROVED
+                                    [executionStatus] => APPROVED
+                                )
+        
+                        )
+        
+                )
+        
+            [1] => Array
+                (
+                    [orderId] => e04be1eb-6ebf-47a6-9069-4b41befd69ec
+                    [senderOrderId] => 2207765
+                    [statuses] => Array
+                        (
+                            [0] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:14.516638+03:00
+                                    [status] => NEW
+                                    [executionStatus] => CREATED
+                                )
+        
+                            [1] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:16.530297+03:00
+                                    [status] => NEW
+                                    [executionStatus] => APPROVED
+                                )
+        
+                            [2] => Array
+                                (
+                                    [changeDate] => 2021-12-13T14:54:17.846835+03:00
+                                    [status] => APPROVED
+                                    [executionStatus] => APPROVED
+                                )
+        
+                        )
+        
+                )
+        
+        )
+        */
     }
      
     catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {

@@ -32,7 +32,13 @@ class Order
     private $pvz_id = null; // UUID точки выдачи заказа
 
     /** @var string|null  */
-    private $warehouse_id = null; // ID склада забора
+    private $pvz_mdm_code = null; // mdm-code точки выдачи – сокращенный идентификатор точки для тех партнеров, кто не может у себя в системе хранить полный UUID
+
+    /** @var string|null  */
+    private $warehouse_id = null; // ID склада забора заказа
+
+    /** @var string|null  */
+    private $return_warehouse_id = null; // ID склада возврата заказа
 
     /** @var \DateTime|null  */
     private $planned_receive_date = null; // Плановая дата передачи заказа покупателю
@@ -85,7 +91,6 @@ class Order
             'number',
             'fio',
             'phone',
-            'pvz_id',
             'warehouse_id',
             'undeliverable_option',
             'payment_value',
@@ -100,14 +105,23 @@ class Order
                 throw new \InvalidArgumentException('В заказе не заполнено обязательное поле '.$property);
         }
 
+        if (is_null($this->pvz_id) && is_null($this->pvz_mdm_code))
+            throw new \InvalidArgumentException('Вы должны заполнить pvz_id или pvz_mdm_code');
+
         $params = [];
         $params['senderOrderId'] = $this->id;
         $params['brandName'] = $this->company_name;
         $params['clientOrderId'] = $this->number;
         $params['clientName'] = $this->fio;
         $params['clientPhone'] = $this->phone;
-        $params['receiverLocation'] = $this->pvz_id;
+        if (empty($this->pvz_mdm_code))
+            $params['receiverLocation'] = $this->pvz_id;
+
+        if (!empty($this->pvz_mdm_code))
+            $params['receiverLocationMDM'] = $this->pvz_mdm_code;
+
         $params['senderLocation'] = $this->warehouse_id;
+        $params['returnLocation'] = $this->return_warehouse_id;
         $params['undeliverableOption'] = $this->undeliverable_option;
 
         if (!empty($this->email))
@@ -472,5 +486,37 @@ class Order
     public function setPlace($place)
     {
         $this->places[] = $place;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPvzMdmCode()
+    {
+        return $this->pvz_mdm_code;
+    }
+
+    /**
+     * @param string|null $pvz_mdm_code
+     */
+    public function setPvzMdmCode($pvz_mdm_code)
+    {
+        $this->pvz_mdm_code = $pvz_mdm_code;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReturnWarehouseId()
+    {
+        return $this->return_warehouse_id;
+    }
+
+    /**
+     * @param string|null $return_warehouse_id
+     */
+    public function setReturnWarehouseId($return_warehouse_id)
+    {
+        $this->return_warehouse_id = $return_warehouse_id;
     }
 }

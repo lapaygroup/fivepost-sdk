@@ -4,6 +4,7 @@ namespace LapayGroup\FivePostSdk;
 
 use GuzzleHttp\Handler\CurlHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\UploadedFile;
 use LapayGroup\FivePostSdk\Entity\Order;
 use LapayGroup\FivePostSdk\Exceptions\FivePostException;
 use LapayGroup\FivePostSdk\Exceptions\TokenException;
@@ -68,7 +69,7 @@ class Client implements LoggerAwareInterface
      * @param $type
      * @param $method
      * @param array $params
-     * @return array
+     * @return array|UploadedFile
      * @throws FivePostException
      */
     private function callApi($type, $method, $params = [], $data_type = self::DATA_JSON)
@@ -81,6 +82,13 @@ class Client implements LoggerAwareInterface
                 }
                 $response = $this->httpClient->delete($method, ['query' => $params]);
                 break;
+            case 'PUT':
+                $request = json_encode($params);
+                if ($this->logger) {
+                    $this->logger->info("5Post API {$type} request {$method}: " . $request);
+                }
+                $response = $this->httpClient->put($method, [$data_type => $params]);
+                break;
             case 'POST':
                 $request = json_encode($params);
                 if ($this->logger) {
@@ -91,10 +99,26 @@ class Client implements LoggerAwareInterface
         }
 
         $json = $response->getBody()->getContents();
+        $http_status_code = $response->getStatusCode();
+        $headers = $response->getHeaders();
+        $headers['http_status'] = $http_status_code;
+        $content_type = $response->getHeaderLine('Content-Type');
 
-        if ($this->logger) {
-            $headers = $response->getHeaders();
-            $headers['http_status'] = $response->getStatusCode();
+        if (preg_match('~^application/(pdf|zip|octet-stream)~', $content_type, $matches_type)) {
+            if ($this->logger) {
+                $this->logger->info("5Post API response {$method}: получен файл с расширением ".$matches_type[1], $headers);
+            }
+
+            $response->getBody()->rewind();
+            preg_match('~=(.+)~', $response->getHeaderLine('Content-Disposition'), $matches_name);
+            return new UploadedFile(
+                $response->getBody(),
+                $response->getBody()->getSize(),
+                UPLOAD_ERR_OK,
+                "{$matches_name[1]}.{$matches_type[1]}",
+                $response->getHeaderLine('Content-Type')
+            );
+        } else if ($this->logger) {
             $this->logger->info("5Post API response {$method}: " . $json, $headers);
         }
 
@@ -207,7 +231,28 @@ class Client implements LoggerAwareInterface
     }
 
     /**
-     * Создание заказов
+     * Создание заказов (одноместные)
+     *
+     * @param array $order_list - массив объектов Order
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function createOrdersV1($order_list)
+    {
+        $params = [];
+        $params['partnerOrders'] = [];
+
+        /** @var Order $order */
+        foreach ($order_list as $order) {
+            $params['partnerOrders'][] = $order->asArr();
+        }
+
+        return $this->callApi('POST', '/api/v1/createOrder', $params);
+    }
+
+    /**
+     * Создание заказов V3 (многоместные)
      *
      * @param array $order_list - массив объектов Order
      * @return array
@@ -224,7 +269,7 @@ class Client implements LoggerAwareInterface
             $params['partnerOrders'][] = $order->asArr();
         }
 
-        return $this->callApi('POST', '/api/v1/createOrder', $params);
+        return $this->callApi('POST', '/api/v3/orders', $params);
     }
 
     /**
@@ -384,5 +429,105 @@ class Client implements LoggerAwareInterface
             throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
 
         return $this->callApi('POST', '/api/v1/getOrderHistoryMass/byOrderId', ['orderIdList' => $vendor_ids]);
+    }
+
+    /**
+     * Запрос чеков по идентификаторам отправителя
+     *
+     * @param string[] $order_ids - Список ID заказов в системе клиента
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getReceiptsByListOrderIds($order_ids)
+    {
+        if (empty($order_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_ids');
+
+        return $this->callApi('POST', '/api/v1/getReceipts/bySenderOrderIds', ['senderOrderIds' => $order_ids]);
+    }
+
+    /**
+     * Запрос чеков по идентификаторам 5Post
+     *
+     * @param string[] $vendor_ids - Список ID заказов в системе 5post
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getReceiptsByListVendorIds($vendor_ids)
+    {
+        if (empty($vendor_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
+
+        return $this->callApi('POST', '/api/v1/getReceipts/byOrderIds', ['orderIds' => $vendor_ids]);
+    }
+
+    /**
+     * Получение этикетки по идентификаторам отправителя
+     *
+     * @param string[] $order_ids - Список ID заказов в системе клиента
+     * @return UploadedFile
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getLabelsByListOrderIds($order_ids, $format = '')
+    {
+        if (empty($order_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_ids');
+
+        if (!in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
+
+        return $this->callApi('POST', '/api/v1/orderLabels/bySenderOrderId'.$format, ['senderOrderIds' => $order_ids]);
+    }
+
+    /**
+     * Получение этикетки по идентификаторам 5Post
+     *
+     * @param string[] $vendor_ids - Список ID заказов в системе 5Post
+     * @return UploadedFile
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function getLabelsByListVendorIds($vendor_ids, $format = '')
+    {
+        if (empty($vendor_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
+
+        if (!in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
+
+        return $this->callApi('POST', '/api/v1/orderLabels/byOrderId'.$format, ['orderIds' => $vendor_ids]);
+    }
+
+    /**
+     * Обнуление наложенного платежа по идентификаторам отправителя
+     *
+     * @param string[] $order_ids - ID заказа в системе клиента
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function removePaymentByListOrderIds($order_ids)
+    {
+        if (empty($order_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр order_ids');
+
+        return $this->callApi('POST', '/api/v1/orders/cost/payment/bySenderOrderId', ['paymentType' => Order::P_TYPE_PREPAYMENT, 'senderOrderIds' => $order_ids]);
+    }
+
+    /**
+     * Обнуление наложенного платежа по идентификаторам 5post
+     *
+     * @param string[] $vendor_ids - ID заказа в системе post
+     * @return array
+     * @throws FivePostException
+     * @throws \InvalidArgumentException
+     */
+    public function removePaymentByListVendorIds($vendor_ids)
+    {
+        if (empty($vendor_ids))
+            throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
+
+        return $this->callApi('POST', '/api/v1/orders/cost/payment/byOrderId', ['paymentType' => Order::P_TYPE_PREPAYMENT, 'orderIds' => $vendor_ids]);
     }
 }

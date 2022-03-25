@@ -26,9 +26,13 @@
 - [Отмена заказа](#cancel-order)   
 - [Статусы заказов](#orders-status)   
 - [История статусов заказа](#order-statuses)     
+- [Получение чеков](#receipts)    
+- [Получение этикетки](#order-labels)    
+- [Обнуление наложенного платежа](#np-zero)    
 
 
 <a name="links"><h1>Changelog</h1></a>
+- 0.6.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.6.0);    
 - 0.5.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.5.0);
 - 0.4.6 - Совместимость с Guzzle 7.3;   
 - 0.4.5 - Добавлен вывод неизвестного кода статуса в текст исключения. Добавлена заменя executionStatus, если там присутствует описание вместе с кодом;   
@@ -141,7 +145,7 @@ catch (\Exception $e) {
     $Client->setCashPercent(0.0192); // 1.92%
 ```
 
-Для расчета стоимости доставки используйте метод **calculationTariff**.   
+Для расчета стоимости и сроков доставки используйте метод **calculationTariff**.   
  
 **Входные параметры:**
 - *$zone* - тарифная зона;  
@@ -151,7 +155,7 @@ catch (\Exception $e) {
 - *$returned* - Возврат в случае невыкупа.
 
 **Выходные параметры:**
-- *float* - стоимость доставки  
+- *array* - стоимость доставки и срок доставки в днях
 
 **Примеры вызова:**
 ```php
@@ -173,6 +177,12 @@ catch (\Exception $e) {
     // Доставка в 1 тарифную зону весом 2 кг, стоимостью 1000 рублей, невозвратная, оплата картой
     $tariff = $Client->calculationTariff(1, 2000, 1000, \LapayGroup\FivePostSdk\Entity\Order::P_TYPE_CASHLESS, false);
 
+    /*
+     array (
+          [price] => 1000.89 // float стоимость доставки в рублях
+          [delivery_days] => 6 // int количество дней
+     )
+     */
 ```
 
 <a name="pvz-list"><h1>Список точек выдачи</h1></a>   
@@ -203,16 +213,18 @@ catch (\Exception $e) {
                     (
                         [0] => Array
                             (
-                                [id] => 000fa5c9-2817-4d8a-8dc4-5ea5b8ea10b2
-                                [name] => S165 - Пятерочка
-                                [partnerName] => Tobacco
-                                [type] => TOBACCO
+                                [id] => 001c8a44-dac3-4651-8a9e-caa8cdbd860e
+                                [mdmCode] => OM120349
+                                [name] => OM120349
+                                [partnerName] => Fivebox
+                                [multiplaceDeliveryAllowed] =>
+                                [type] => POSTAMAT
                                 [workHours] => Array
                                     (
                                         [0] => Array
                                             (
                                                 [day] => MON
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -221,7 +233,7 @@ catch (\Exception $e) {
                                         [1] => Array
                                             (
                                                 [day] => TUE
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -230,7 +242,7 @@ catch (\Exception $e) {
                                         [2] => Array
                                             (
                                                 [day] => WED
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -239,7 +251,7 @@ catch (\Exception $e) {
                                         [3] => Array
                                             (
                                                 [day] => THU
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -248,7 +260,7 @@ catch (\Exception $e) {
                                         [4] => Array
                                             (
                                                 [day] => FRI
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -257,7 +269,7 @@ catch (\Exception $e) {
                                         [5] => Array
                                             (
                                                 [day] => SAT
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -266,7 +278,7 @@ catch (\Exception $e) {
                                         [6] => Array
                                             (
                                                 [day] => SUN
-                                                [opensAt] => 08:30:00
+                                                [opensAt] => 08:00:00
                                                 [closesAt] => 22:00:00
                                                 [timezone] => Europe/Moscow
                                                 [timezoneOffset] => +03:00
@@ -274,49 +286,48 @@ catch (\Exception $e) {
             
                                     )
             
-                                [fullAddress] => Тихорецк г, Октябрьская ул, 50
-                                [shortAddress] => Октябрьская ул, 50
+                                [fullAddress] => Зеленодольск г, Татарстан ул., 30
+                                [shortAddress] => Татарстан ул., 30
                                 [address] => Array
                                     (
                                         [country] => Россия
-                                        [zipCode] => 352120
-                                        [region] => Краснодарский край
-                                        [city] => Тихорецк г
-                                        [regionType] => край
+                                        [zipCode] => 422544
+                                        [region] => Татарстан республика
+                                        [city] => Зеленодольск г
+                                        [regionType] => республика
                                         [cityType] => г
-                                        [street] => Октябрьская ул
-                                        [house] => 50
+                                        [street] => Татарстан ул.
+                                        [house] => 30
                                         [building] =>
                                         [metroStation] =>
-                                        [lat] => 45.856114
-                                        [lng] => 40.128113
+                                        [lat] => 55.854559
+                                        [lng] => 48.503302
                                     )
             
-                                [additional] => Выдача заказов осуществляется на кассе магазина «Пятёрочка»
-                                [openDate] => 2019-08-08T00:00:00
+                                [additional] => Постамат 5post расположен в магазине «Пятёрочка»
                                 [cellLimits] => Array
                                     (
-                                        [maxCellWidth] => 401
-                                        [maxCellHeight] => 361
-                                        [maxCellLength] => 611
+                                        [maxCellWidth] => 457
+                                        [maxCellHeight] => 322
+                                        [maxCellLength] => 400
                                         [maxWeight] => 15000000
                                     )
             
                                 [returnAllowed] =>
-                                [timezone] => Europe/Moscow
                                 [timezoneOffset] => +03:00
-                                [phone] => 88005555505
+                                [phone] => 88005118800
                                 [cashAllowed] =>
                                 [cardAllowed] =>
                                 [loyaltyAllowed] =>
                                 [extStatus] => ACTIVE
-                                [localityFiasCode] => 1d3511c8-b1dc-49c5-b5fb-3533ed4ce3c4
-                                [createDate] => 2020-03-20T15:40:12.221556+03:00
+                                [localityFiasCode] => 1e90ec38-0f85-442b-ac1b-ca687fa91d88
+                                [createDate] => 2020-03-20T15:40:12.223556+03:00
                                 [deliverySL] => Array
                                     (
                                         [0] => Array
                                             (
                                                 [sl] => 4
+                                                [slCode] => 10
                                             )
             
                                     )
@@ -325,18 +336,27 @@ catch (\Exception $e) {
                                     (
                                         [0] => Array
                                             (
-                                                [id] => 65eee565-e124-4662-8dec-8ac187881aea
-                                                [pickupPointId] => 000fa5c9-2817-4d8a-8dc4-5ea5b8ea10b2
+                                                [rateType] =>
                                                 [zone] => 5
-                                                [rateType] => Hub_Bogorodsk
-                                                [rateValue] => 0
-                                                [rateExtraValue] => 0
+                                                [rateValue] => 199.17
+                                                [vat] => 20
+                                                [rateValueWithVat] => 239.004
+                                                [rateExtraValueWithVat] => 36
+                                                [rateExtraValue] => 30
                                                 [rateCurrency] => RUB
-                                                [startDate] => 2020-07-01
-                                             )
+                                                [rateTypeCode] => 10
+                                            )
             
                                     )
             
+                                [lastMileWarehouse] => Array
+                                    (
+                                        [id] => ab64adfe-4774-453c-9eb7-f89534804530
+                                        [name] => РЦ Казань
+                                    )
+            
+                                [openDate] => 2018-11-22T15:07:35.980608
+                                [timezone] => Europe/Moscow
                             )
             
                     )
@@ -345,32 +365,32 @@ catch (\Exception $e) {
                     (
                         [sort] => Array
                             (
-                                [sorted] => 1
                                 [unsorted] =>
+                                [sorted] => 1
                                 [empty] =>
                             )
             
                         [pageNumber] => 0
-                        [pageSize] => 10
+                        [pageSize] => 1
                         [offset] => 0
                         [paged] => 1
                         [unpaged] =>
                     )
             
-                [totalPages] => 967
-                [totalElements] => 9661
+                [totalElements] => 17315
+                [totalPages] => 17315
                 [last] =>
                 [sort] => Array
                     (
-                        [sorted] => 1
                         [unsorted] =>
+                        [sorted] => 1
                         [empty] =>
                     )
             
-                [number] => 0
                 [numberOfElements] => 1
                 [first] => 1
-                [size] => 10
+                [size] => 1
+                [number] => 0
                 [empty] =>
             )
         **/
@@ -470,7 +490,8 @@ catch (\Exception $e) {
 
 
 <a name="create-order"><h1>Создание заказа</h1></a>  
-Метод **createOrders** позволяет создать заказ. За один запрос можно создать несколько заказов.  
+Метод **createOrders** позволяет создать многоместный заказ (v3 API, метод включается по запросу к персональному менеджеру). За один запрос можно создать несколько заказов.   
+Метод **createOrdersV1** реализует создание одноместных заказов через v1 API.   
 
 **Входные параметры:**
 - *Order[]* - массив объектов [LapayGroup\FivePostSdk\Entity\Order](src/Entity/Order.php).
@@ -524,7 +545,8 @@ catch (\Exception $e) {
         $Place->setItem($item);
         $Order->setPlace($Place);
     
-        $result = $Client->createOrders([$Order]);
+        $result = $Client->createOrdersV1([$Order]); // Создание заказов без мест V1
+        $result = $Client->createOrders([$Order]); // Создание многоместных заказов V3
         
         /** Успешный ответ
         Array
@@ -815,6 +837,162 @@ catch (\Exception $e) {
         
                 )
         
+        )
+        */
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
+
+
+<a name="receipts"><h1>Получение чеков</h1></a>  
+Метод **getReceiptsByListOrderIds** возвращает данные чеков по списку заказов в системе клиента.   
+Метод **getReceiptsByListVendorIds** возвращает данные чеков по списку заказов в системе 5post.
+
+**Входные параметры:**
+- *string[] $order_ids* - Список id заказов клиента или 5post;
+
+**Выходные параметры:**
+- *array* - Список данных по чекам
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        
+        // По списку ID заказов в системе клиента
+        $result = $Client->getReceiptsByListOrderIds(['1234567891']);
+
+        // По списку ID заказов в системе 5post
+        $result = $Client->getReceiptsByListVendorIds(['55c9c98f-0b0d-4dbc-af9e-20cffa31eeaa']);
+        
+        /** 
+        Array (
+            [0] => Array (
+                [orderId] => 55c9c98f-0b0d-4dbc-af9e-20cffa31eeaa
+                [senderOrderId] => 2229829
+                [clientOrderId] => 2218386
+                [receipts] => Array
+                    (
+                        [0] => Array
+                            (
+                                [receiptDate] => 2022-03-25T11:43:15.032252+03:00
+                                [receiptAmount] => 2140
+                                [receiptType] => FULL_PAYMENT
+                                [fiscalNumber] => 9960440300516976
+                                [fiscalDocument] => 2959
+                                [fiscalAttribute] => 363421806
+                                [receiptUrl] => https://ofd.beeline.ru/check-order?fn={FN}&fp={FP}&fd={FD}
+                                [payments] => Array
+                                    (
+                                        [0] => Array
+                                            (
+                                                [amount] => 2140
+                                                [type] => ITEM_PAYMENT
+                                                [method] => CARD
+                                            )
+    
+                                    )
+    
+                            )
+    
+                    )
+            )
+        */
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
+
+
+<a name="order-labels"><h1>Получение этикетки</h1></a>  
+Метод **getReceiptsByListOrderIds** возвращает данные чеков по списку заказов в системе клиента.   
+Метод **getReceiptsByListVendorIds** возвращает данные чеков по списку заказов в системе 5post.
+
+**Входные параметры:**
+- *string[] $order_ids* - Список id заказов клиента или 5post;
+- *string $format* - Формат этикетки. Допустимые значения PDF и ZIP (опциональный параметр);  
+
+**Выходные параметры:**
+- *UploadedFile* - Файл с этикетками в формате ZIP или PDF.
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        
+        // По ID заказа в системе клиента
+        $result = $Client->getLabelsByListOrderIds(['1234567891']);
+
+        // По ID заказа в системе 5post
+        $result = $Client->getLabelsByListVendorIds(['12854f88-1b9c-435c-85ba-c2e345b9f891']);
+    }
+     
+    catch (LapayGroup\FivePostSdk\Exceptions\FivePostException $e) {
+        // Обработка ошибки вызова API 5post
+        // $e->getMessage(); // текст ошибки 
+        // $e->getCode(); // http код ответа сервиса 5post или код ошибки при наличии узла error в ответе
+        // $e->getRawResponse(); // ответ сервера 5post как есть (http request body)
+    }  
+ 
+    catch (\Exception $e) {
+        // Обработка исключения
+    }
+```
+
+
+<a name="np-zero"><h1>Обнуление наложенного платежа</h1></a>  
+Методы работают только с заказами, который созданы через метод API V3.   
+Метод **getReceiptsByListOrderIds** возвращает данные чеков по списку заказов в системе клиента.   
+Метод **getReceiptsByListVendorIds** возвращает данные чеков по списку заказов в системе 5post.    
+
+**Входные параметры:**
+- *string[] $order_ids* - Список id заказов клиента или 5post;
+
+**Выходные параметры:**
+- *array* - Список данных по результату обнуления НП.
+
+**Примеры вызова:**
+```php
+<?php
+    try {
+        $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
+        
+        // По ID заказа в системе клиента
+        $result = $Client->removePaymentByListOrderIds(['1234567891']);
+
+        // По ID заказа в системе 5post
+        $result = $Client->removePaymentByListVendorIds(['12854f88-1b9c-435c-85ba-c2e345b9f891']);
+        
+        /** 
+        Array
+        (
+            [0] => Array
+            (    
+                [orderId] => 12854f88-1b9c-435c-85ba-c2e345b9f891
+                [senderOrderId] => 1234567891
+                [success] => true
+            )
         )
         */
     }

@@ -1,6 +1,6 @@
 
-<a href="https://lapay.group/"><img align="left" width="200" src="https://lapay.group/img/lapaygroup.svg"></a>
-<a href="http://fivepost.ru"><img align="right" width="200" src="https://lapay.group/fivepostlogo.png"></a>    
+<a href="https://lapaygroup.ru/"><img align="left" width="200" src="https://lapaygroup.ru/img/lapaygroup.svg"></a>
+<a href="http://fivepost.ru"><img align="right" width="200" src="https://lapaygroup.ru/fivepostlogo.png"></a>    
 
 <br /><br /><br />
 

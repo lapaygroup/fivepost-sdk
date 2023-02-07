@@ -11,7 +11,7 @@
 
 # SDK для [интеграции с программным комплексом 5post](http://fivepost.ru).  
 
-Посмотреть все проекты или подарить автору кофе можно [тут](https://lapay.group/opensource).    
+Посмотреть все проекты или подарить автору кофе можно [тут](https://lapaygroup.ru/opensource).    
 
 [Документация к API](https://fivepost.ru/developers) 5post.    
 

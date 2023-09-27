@@ -11,68 +11,68 @@ trait TariffsTrait {
 
     private $zone_tariffs = [
         '1' => [
-            'basic_price' => 129,
+            'basic_price' => 187,
             'overload_kg_price' => 18,
             'delivery_days' => 3
         ],
         '2' => [
-            'basic_price' => 138,
+            'basic_price' => 220,
             'overload_kg_price' => 18,
             'delivery_days' => 3
         ],
         '3' => [
-            'basic_price' => 148,
-            'overload_kg_price' => 18,
+            'basic_price' => 248,
+            'overload_kg_price' => 19,
             'delivery_days' => 3
         ],
         '4' => [
-            'basic_price' => 160,
+            'basic_price' => 286,
             'overload_kg_price' => 36,
             'delivery_days' => 6
         ],
         '5' => [
-            'basic_price' => 205,
-            'overload_kg_price' => 36,
+            'basic_price' => 334,
+            'overload_kg_price' => 48,
             'delivery_days' => 6
         ],
         '6' => [
-            'basic_price' => 180,
-            'overload_kg_price' => 36,
+            'basic_price' => 321,
+            'overload_kg_price' => 38,
             'delivery_days' => 6
         ],
         '7' => [
-            'basic_price' => 225,
-            'overload_kg_price' => 36,
+            'basic_price' => 403,
+            'overload_kg_price' => 54,
             'delivery_days' => 6
         ],
         '8' => [
-            'basic_price' => 217,
-            'overload_kg_price' => 54,
+            'basic_price' => 423,
+            'overload_kg_price' => 66,
             'delivery_days' => 9
         ],
         '9' => [
-            'basic_price' => 259,
-            'overload_kg_price' => 54,
+            'basic_price' => 518,
+            'overload_kg_price' => 113,
             'delivery_days' => 10
         ],
         '10' => [
-            'basic_price' => 268,
-            'overload_kg_price' => 54,
+            'basic_price' => 481,
+            'overload_kg_price' => 70,
             'delivery_days' => 8
         ],
         '11' => [
-            'basic_price' => 290,
-            'overload_kg_price' => 54,
+            'basic_price' => 551,
+            'overload_kg_price' => 70,
             'delivery_days' => 8
         ],
         '12' => [
-            'basic_price' => 348,
-            'overload_kg_price' => 54,
+            'basic_price' => 551,
+            'overload_kg_price' => 117,
             'delivery_days' => 8
         ],
         '13' => [
-            'basic_price' => 368,
-            'overload_kg_price' => 72,
+            'basic_price' => 578,
+            'overload_kg_price' => 194,
             'delivery_days' => 9
         ]
     ];

@@ -32,6 +32,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>
+- 0.6.1 - Обновлеты тарифы 5post для расчёта;  
 - 0.6.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.6.0);    
 - 0.5.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.5.0);
 - 0.4.6 - Совместимость с Guzzle 7.3;   

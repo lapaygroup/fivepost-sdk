@@ -32,6 +32,7 @@
 
 
 <a name="links"><h1>Changelog</h1></a>
+- 0.6.2 - Добавлены зависимости guzzle ^7.0 и psr/log ^2.0|^3.0
 - 0.6.1 - Обновлеты тарифы 5post для расчёта;  
 - 0.6.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.6.0);    
 - 0.5.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.5.0);

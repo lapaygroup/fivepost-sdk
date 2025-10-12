@@ -77,6 +77,8 @@ trait TariffsTrait {
         ]
     ];
 
+    private $weight_basic = 3; // Максимальный вес заказа, при котором расчет идет по базовому тарифу
+
     /**
      * Расчет стоимости доставки
      *
@@ -103,8 +105,8 @@ trait TariffsTrait {
 
         $weight /= 1000;
 
-        if ($weight > 3) {
-            $tariff = $this->zone_tariffs[$zone]['basic_price'] + (($weight - 3) * $this->zone_tariffs[$zone]['overload_kg_price']);
+        if ($weight > $this->weight_basic) {
+            $tariff = $this->zone_tariffs[$zone]['basic_price'] + (($weight - $this->weight_basic) * $this->zone_tariffs[$zone]['overload_kg_price']);
         } else {
             $tariff = $this->zone_tariffs[$zone]['basic_price'];
         }
@@ -203,5 +205,21 @@ trait TariffsTrait {
     public function setZoneTariffs($zone_tariffs)
     {
         $this->zone_tariffs = $zone_tariffs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getWeightBasic()
+    {
+        return $this->weight_basic;
+    }
+
+    /**
+     * @param int $weight_basic
+     */
+    public function setWeightBasic($weight_basic)
+    {
+        $this->weight_basic = $weight_basic;
     }
 }

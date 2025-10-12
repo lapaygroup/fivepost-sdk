@@ -106,7 +106,7 @@ trait TariffsTrait {
         $weight /= 1000;
 
         if ($weight > $this->weight_basic) {
-            $tariff = $this->zone_tariffs[$zone]['basic_price'] + (($weight - $this->weight_basic) * $this->zone_tariffs[$zone]['overload_kg_price']);
+            $tariff = $this->zone_tariffs[$zone]['basic_price'] + (intval(ceil($weight - $this->weight_basic)) * $this->zone_tariffs[$zone]['overload_kg_price']);
         } else {
             $tariff = $this->zone_tariffs[$zone]['basic_price'];
         }

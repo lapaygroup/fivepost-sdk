@@ -203,9 +203,9 @@ catch (\Exception $e) {
 <?php
     try {
         $Client = new LapayGroup\FivePostSdk\Client('api-key', 60, \LapayGroup\FivePostSdk\Client::API_URI_TEST);
-        $totalPages = 2;
-        foreach ($i = 0; $i <= $totalPages; $i++) {
-            $result = $Client->getPvzList(0, 1000); // Больше 2000 за раз получить нельзя
+        $totalPages = 1;
+        for ($i = 0; $i < $totalPages; $i++) {
+            $result = $Client->getPvzList($i, 1000); // Больше 2000 за раз получить нельзя
             if (!empty($result['totalPages'])) $totalPages = $result['totalPages']; // Заносим количество страниц из ответа
         }
         /**

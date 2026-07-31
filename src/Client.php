@@ -476,7 +476,7 @@ class Client implements LoggerAwareInterface
         if (empty($order_ids))
             throw new \InvalidArgumentException('Отсутствует обязательный параметр order_ids');
 
-        if (!in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
+        if (in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
 
         return $this->callApi('POST', '/api/v1/orderLabels/bySenderOrderId'.$format, ['senderOrderIds' => $order_ids]);
     }
@@ -494,7 +494,7 @@ class Client implements LoggerAwareInterface
         if (empty($vendor_ids))
             throw new \InvalidArgumentException('Отсутствует обязательный параметр vendor_ids');
 
-        if (!in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
+        if (in_array($format, ['PDF', 'ZIP'])) $format = '?format='.$format;
 
         return $this->callApi('POST', '/api/v1/orderLabels/byOrderId'.$format, ['orderIds' => $vendor_ids]);
     }

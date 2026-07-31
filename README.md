@@ -28,7 +28,7 @@
 
 Посмотреть все проекты или подарить автору кофе можно [тут](https://lapaygroup.ru/opensource).
 
-[Документация к API](https://fivepost.ru/developers).
+[Документация к API](https://fivepost.ru/become-partner/#s4).
 
 # Содержание
 - [Changelog](#changelog)

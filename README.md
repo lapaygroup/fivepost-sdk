@@ -47,7 +47,8 @@
 
 
 <a name="links"><h1>Changelog</h1></a>
-- 0.6.3 - Исправляет передачу формата в методах getLabelsByListOrderIds и getLabelsByListVendorIds
+- 0.6.4 - Исправляет передачу формата в методах getLabelsByListOrderIds и getLabelsByListVendorIds
+- 0.6.3 - Незначительные изменения от комьюнити
 - 0.6.2 - Добавлены зависимости guzzle ^7.0 и psr/log ^2.0|^3.0
 - 0.6.1 - Обновлеты тарифы для расчёта;
 - 0.6.0 - Подробное описание [тут](https://github.com/lapaygroup/fivepost-sdk/releases/tag/0.6.0);
